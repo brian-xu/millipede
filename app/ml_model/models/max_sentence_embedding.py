@@ -1,6 +1,3 @@
-from __future__ import division
-from __future__ import print_function
-
 import numpy as np
 import torch
 import torch.nn as nn
@@ -8,16 +5,22 @@ import torch.nn.functional as F
 from torch.autograd import Variable
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 
-from utils import maybe_cuda, setup_logger, unsort
+device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
-logger = setup_logger(__name__, 'train.log')
-profilerLogger = setup_logger("profilerLogger", 'profiler.log', True)
+
+def unsort(sort_order):
+    result = [-1] * len(sort_order)
+
+    for i, index in enumerate(sort_order):
+        result[index] = i
+
+    return result
 
 
 def zero_state(module, batch_size):
     # * 2 is for the two directions
-    return Variable(maybe_cuda(torch.zeros(module.num_layers * 2, batch_size, module.hidden))), \
-           Variable(maybe_cuda(torch.zeros(module.num_layers * 2, batch_size, module.hidden)))
+    return Variable(torch.zeros(module.num_layers * 2, batch_size, module.hidden).to(device)), \
+           Variable(torch.zeros(module.num_layers * 2, batch_size, module.hidden).to(device))
 
 
 class SentenceEncodingRNN(nn.Module):
@@ -39,7 +42,7 @@ class SentenceEncodingRNN(nn.Module):
         packed_output, _ = self.lstm(x, s)
         padded_output, lengths = pad_packed_sequence(packed_output)  # (max sentence len, batch, 256)
 
-        maxes = Variable(maybe_cuda(torch.zeros(batch_size, padded_output.size(2))))
+        maxes = Variable(torch.zeros(batch_size, padded_output.size(2)).to(device))
         for i in range(batch_size):
             maxes[i, :] = torch.max(padded_output[:lengths[i], i, :], 0)[0]
 
@@ -69,7 +72,7 @@ class Model(nn.Module):
 
     def pad(self, s, max_length):
         s_length = s.size()[0]
-        v = Variable(maybe_cuda(s.unsqueeze(0).unsqueeze(0)))
+        v = Variable(s.unsqueeze(0).unsqueeze(0).to(device))
         padded = F.pad(v, (0, 0, 0, max_length - s_length))  # (1, 1, max_length, 300)
         shape = padded.size()
         return padded.view(shape[2], 1, shape[3])  # (max_length, 1, 300)
@@ -96,14 +99,12 @@ class Model(nn.Module):
         sorted_lengths = [s.size()[0] for s in sorted_sentences]
 
         max_length = max(lengths)
-        logger.debug('Num sentences: %s, max sentence length: %s',
-                     sum(sentences_per_doc), max_length)
 
         padded_sentences = [self.pad(s, max_length) for s in sorted_sentences]
         big_tensor = torch.cat(padded_sentences, 1)  # (max_length, batch size, 300)
         packed_tensor = pack_padded_sequence(big_tensor, sorted_lengths)
         encoded_sentences = self.sentence_encoder(packed_tensor)
-        unsort_order = Variable(maybe_cuda(torch.LongTensor(unsort(sort_order))))
+        unsort_order = Variable(torch.LongTensor(unsort(sort_order)).to(device))
         unsorted_encodings = encoded_sentences.index_select(0, unsort_order)
 
         index = 0
