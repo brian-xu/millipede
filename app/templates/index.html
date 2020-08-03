@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <title>Millipede</title>
+
+    <link rel="icon" type="image/svg+xml" href="static/millipede.svg">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+            integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+            crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+        $(document).ready(
+            function () {
+              $('[data-toggle="tooltip"]').tooltip()
+            },
+            function () {
+                $('#classifyfile').attr('disabled', true);
+                $('#imagefile').change(
+                    function () {
+                        if ($(this).val()) {
+                            $('#formupload').submit();
+                        }
+                    }
+                );
+            }
+        );
+    </script>
+</head>
+
+
+<body id="page-top">
+<nav class="navbar navbar-expand-lg navbar-fixed-top bg-secondary p-0" id="mainNav">
+    <div class="container">
+        <a class="navbar-brand logo text-white container-fluid justify-content-start" href="#">
+            <svg class="navbar-brand mx-1" height="45" viewBox="65 170 300 210" fill="none"
+                 xmlns="http://www.w3.org/2000/svg">
+                <path d="M 150 300 A 25 25 0 1 1 150 350 A 50 50 0 1 1 150 200 C 240 200 220 300 275 300 A 25 25 0 1 0 275
+                 250 A 25 25 0 1 1 275 200 A 50 50 0 1 1 275 350 C 185 350 205 250 150 250 A 25 25 0 1 0 150 300 Z"
+                      fill="#222422"/>
+            </svg>
+            <h2>Millipede</h2>
+        </a>
+    </div>
+</nav>
+<section class="container-fluid flex-grow text-left bg-light">
+    <div class="container d-flex align-items-center flex-column">
+        <div class="row">
+            <h2 class="title col-md-4 mt-4">
+                WHAT IS MILLIPEDE?
+                <hr/>
+            </h2>
+            <section class="col-md-8"></section>
+            <div class="w-100"></div>
+            <div class="col-md-4">
+                <p class="pre-wrap lead">Millipede is a tool to generate websites from plain text bodies.
+                    It uses an LSTM to segment the text, and Jinja and Bootstrap to create the website.
+                </p>
+            </div>
+            <div class="col-md-8">
+                <form role="form" action="segment_text" method="get">
+                    <div class="form-group rows">
+                        <input type="text" class="form-control" name="title" id="title"
+                               placeholder="Enter website title here">
+                        <div class="input-group">
+                            <textarea class="form-control mb-1" rows="24" name="paragraph" id="paragraph"
+                                      placeholder="Enter website content here"></textarea>
+                        </div>
+                        <div class="w-100"></div>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" data-toggle="tooltip" data-placement="top"
+                                      title="The threshold at which a sentence is considered the end of a paragraph.
+                                             Lower values will result in more segmentation and more paragraphs.">
+                                    Segmentation Threshold</span>
+                            </div>
+                            <div class="custom-file">
+                                <input type="text" class="form-control text-right" name="threshold" id="threshold"
+                                       value="0.4">
+                                <input class="btn btn-primary" value="Create website" type="submit" id="segmenttext"/>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

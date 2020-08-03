@@ -7,6 +7,22 @@ from ml_model.segmenter import Segmenter
 app = flask.Flask(__name__)
 
 
+@app.route('/')
+def index():
+    return flask.render_template('index.html')
+
+
+@app.route('/segment_text', methods=['GET'])
+def classify_url():
+    title = flask.request.args.get('title', '')
+    paragraph = flask.request.args.get('paragraph', '')
+    threshold = float(flask.request.args.get('threshold', ''))
+
+    result = app.segmenter.segment(paragraph, threshold)
+
+    return flask.render_template('website.html', result=result, title=title)
+
+
 def start_app(app):
     parser = ArgumentParser()
     parser.add_argument(
@@ -20,19 +36,19 @@ def start_app(app):
     parser.add_argument(
         '--word2vec',
         help='Word2vec model path',
-        ype=str)
+        type=str)
     parser.add_argument(
         '--model',
         help='Segmentation model path',
         type=str)
     parser.add_argument(
         '--seg_threshold',
-        help='Threshold for binary classification',
+        help='Default threshold for binary classification',
         type=float, default=0.4)
     args = parser.parse_args()
 
     app.segmenter = Segmenter(args)
-    app.run(debug=True, host='127.0.0.1', port=args.port)
+    app.run(debug=args.debug, host='127.0.0.1', port=args.port)
 
 
 if __name__ == '__main__':
