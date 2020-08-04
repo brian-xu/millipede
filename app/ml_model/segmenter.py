@@ -12,10 +12,10 @@ def softmax(x):
 
 
 class Segmenter:
-    def __init__(self, args):
+    def __init__(self, model_path, word2vec_path, seg_threshold):
         self.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-        self.args = args
-        self._initialize(self.args.model, self.args.word2vec)
+        self.seg_threshold = seg_threshold
+        self._initialize(model_path, word2vec_path)
 
     def _initialize(self, model_path: str, word2vec_path: str):
         self.model = torch.load(model_path, map_location=self.device)
@@ -45,7 +45,7 @@ class Segmenter:
         if threshold:
             output_seg = output_prob[:, 1] > threshold
         else:
-            output_seg = output_prob[:, 1] > self.args.seg_threshold
+            output_seg = output_prob[:, 1] > self.seg_threshold
         segments = [""]
         for i in range(len(sentences) - 1):
             segments[-1] += sentences[i] + " "
