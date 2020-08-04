@@ -1,7 +1,7 @@
+-f https://download.pytorch.org/whl/torch_stable.html
 flask==1.1.2
 gensim==3.8.3
 nltk==3.5
 numpy==1.19.1
--f https://download.pytorch.org/whl/torch_stable.html
 torch==1.6.0+cpu
 torchvision==0.7.0+cpu
