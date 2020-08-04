@@ -26,12 +26,12 @@
     </div>
 </nav>
 {% for paragraph in result %}
-    <section class="container-fluid text-left bg-{{['light', 'white'][loop.index0%2]}}">
-        <div class="container d-flex align-items-center">
-            <p class="pre-wrap lead my-3">{{paragraph}}
-            </p>
-        </div>
-    </section>
+<section class="container-fluid text-left bg-{{['light', 'white'][loop.index0%2]}}">
+    <div class="container d-flex align-items-center">
+        <p class="pre-wrap lead my-3">{{paragraph}}
+        </p>
+    </div>
+</section>
 {% endfor %}
 </body>
 </html>

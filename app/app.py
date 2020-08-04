@@ -1,3 +1,4 @@
+import io
 from argparse import ArgumentParser
 
 import flask
@@ -19,8 +20,11 @@ def classify_url():
     threshold = float(flask.request.args.get('threshold', ''))
 
     result = app.segmenter.segment(paragraph, threshold)
-
-    return flask.render_template('website.html', result=result, title=title)
+    return flask.send_file(
+        io.BytesIO(bytes(flask.render_template('website.html', result=result, title=title), 'utf-8')),
+        mimetype='text/html',
+        as_attachment=True,
+        attachment_filename=f'{title}.html')
 
 
 def start_app(app):
