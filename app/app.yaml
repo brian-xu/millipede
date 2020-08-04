@@ -1,6 +1,11 @@
 runtime: python37
 env: flex
 
+resources:
+  cpu: 2
+  memory_gb: 4.0
+  disk_size_gb: 20
+
 handlers:
   # This configures Google App Engine to serve the files in the app's static
   # directory.
