@@ -1,4 +1,0 @@
-flask
-gensim
-nltk
-numpy
