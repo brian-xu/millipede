@@ -20,13 +20,13 @@ class Segmenter:
     def _initialize(self, model_path: str, word2vec_path: str):
         self.model = torch.load(model_path, map_location=self.device)
         self.model.eval()
-        self.word2vec = gensim.models.KeyedVectors.load_word2vec_format(word2vec_path, binary=True, limit=1000000)
         self.word_tokenizer = nltk.tokenize.RegexpTokenizer(r'\w+')
         try:
             self.sent_tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
         except LookupError:
             nltk.download('punkt')
             self.sent_tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+        self.word2vec = gensim.models.KeyedVectors.load_word2vec_format(word2vec_path, binary=True, limit=800000)
 
     def _tokenize(self, word):
         if word in self.word2vec:
